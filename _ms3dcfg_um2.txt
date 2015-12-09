@@ -1,0 +1,9 @@
+Base=UM2
+Job3DOutputAreaHeight=205000
+Job3DOutputAreaWidth=225000
+Job3DOutputAreaDepth=225000
+Job3DOutputAreaHeight=205000
+baudrate=250000
+platformtemperature=60
+filamentdiameter=2850
+extrudertemperature=210

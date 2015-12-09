@@ -1,0 +1,6 @@
+Base=PB1403
+Job3DOutputAreaHeight=254000
+Job3DOutputAreaWidth=254000
+Job3DOutputAreaDepth=254000
+platformtemperature=60
+retraction=2500

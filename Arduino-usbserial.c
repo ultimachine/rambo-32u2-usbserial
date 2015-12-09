@@ -164,6 +164,31 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 /** Event handler for the library USB Unhandled Control Request event. */
 void EVENT_USB_Device_UnhandledControlRequest(void)
 {
+	const void* DescriptorPointer;
+	uint16_t    DescriptorSize;
+
+	/* NB: bmRequestType from Windows will be 0xC0 (REQDIR_DEVICETOHOST|REQTYPE_VENDOR|REQREC_DEVICE) for
+	Compatible ID and 0xC1 (REQDIR_DEVICETOHOST|REQTYPE_VENDOR|REQREC_INTERFACE) for Extended Properties */
+	if ((USB_ControlRequest.bmRequestType & (CONTROL_REQTYPE_DIRECTION | CONTROL_REQTYPE_TYPE)) == (REQDIR_DEVICETOHOST | REQTYPE_VENDOR))
+	{
+		if (USB_ControlRequest.bRequest == REQ_GetOSFeatureDescriptor)
+		{
+			DescriptorSize = USB_GetOSFeatureDescriptor(USB_ControlRequest.wValue >> 8,
+				USB_ControlRequest.wIndex,
+				USB_ControlRequest.bmRequestType & CONTROL_REQTYPE_RECIPIENT,
+				&DescriptorPointer);
+			
+			if (DescriptorSize != NO_DESCRIPTOR)
+			{
+				Endpoint_ClearSETUP();
+				Endpoint_Write_Control_PStream_LE(DescriptorPointer, DescriptorSize);
+				Endpoint_ClearOUT();
+			}
+
+			return;
+		}
+	}
+
 	CDC_Device_ProcessControlRequest(&VirtualSerial_CDC_Interface);
 }
 
